@@ -1,0 +1,239 @@
+// ==== Compliment List (Edit/add as you wish) ====
+const compliments = [
+  "You are effortlessly kind.",
+  "You have a smile people remember.",
+  "You are a quiet type of magic.",
+  "You are strong even when no one sees it.",
+  "You’re someone’s reason to believe in good people again.",
+  "You’re soft in a world that rewards hardness.",
+  "You’re emotionally intelligent without showing off.",
+  "You are sunshine on someone’s rainy day.",
+  "You make ordinary moments special.",
+  "You listen with your whole heart.",
+  "You give hope without even trying.",
+  "You radiate gentle confidence.",
+  "You are creative in ways you don’t always notice.",
+  "You make others feel safe to be themselves.",
+  "You turn worries into comfort.",
+  "You’re the calm in a storm.",
+  "You make room for everyone’s feelings.",
+  "You’re quietly brave.",
+  "You love deeply, even in small ways.",
+  "Your presence makes places feel like home.",
+  "You always find the silver lining.",
+  "You’re someone’s favorite hello.",
+  "You ask questions that matter.",
+  "You believe in people before they believe in themselves.",
+  "You care in thoughtful, practical ways.",
+  "You give the best hugs.",
+  "You make others feel seen.",
+  "You light up the room softly.",
+  "You’re wise beyond your years.",
+  "You’re a safe place to land.",
+  "You see beauty in little things.",
+  "You’re patient, even when it’s hard.",
+  "You encourage others just by being you.",
+  "You remind people of what’s good in the world.",
+  "You inspire quiet confidence.",
+  "You bring out the best in others.",
+  "You have the gentlest laugh.",
+  "You’re a rare kind of wonderful.",
+  "You’re someone’s answered prayer.",
+  "You notice things others miss.",
+  "You make life sweeter.",
+];
+
+// Pastel color palette for compliments
+const pastelPalette = [
+  "#ffe3ec", // light pink
+  "#e0ecff", // sky blue
+  "#e6fff9", // mint green
+  "#fff0e5", // peach
+  "#ede7f6", // lavender
+  "#d4f3ef", // mint
+  "#f9f4ff", // lilac/white
+  "#fef6e4", // cream peach
+  "#e0f7fa", // pale aqua
+  "#f3e8ff", // soft violet
+];
+
+// ========== SVG FLOWER COMPONENT ==============
+function renderFlower() {
+  // Flower SVG with animated, glowing petals
+  return `
+    <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="7" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <radialGradient id="coreGrad" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#fff6fa"/>
+          <stop offset="100%" stop-color="#ffb3c6"/>
+        </radialGradient>
+        <linearGradient id="petalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#ffe3ec"/>
+          <stop offset="100%" stop-color="#e0ecff"/>
+        </linearGradient>
+      </defs>
+      <!-- 8 petals -->
+      ${Array(8).fill(0).map((_,i)=>`
+        <ellipse
+          class="flower-petal"
+          style="animation-delay:${0.1*i+0.5}s;"
+          cx="90" cy="60"
+          rx="26" ry="70"
+          fill="url(#petalGrad)"
+          opacity="0.84"
+          transform="rotate(${i*45} 90 90)"
+        />
+      `).join("")}
+      <!-- Center -->
+      <circle class="flower-core" cx="90" cy="90" r="30" fill="url(#coreGrad)" />
+    </svg>
+  `;
+}
+
+// ========== SPARKLES/BOKEH ANIMATION ===========
+function createSparkles() {
+  const sparkleContainer = document.querySelector('.sparkle-container');
+  const sparkleCount = 32;
+  for(let i=0; i<sparkleCount; i++) {
+    let sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.style.left = (Math.random()*98) + 'vw';
+    sparkle.style.top = (100 + Math.random()*20) + 'vh';
+    let size = 6 + Math.random()*8;
+    sparkle.style.width = sparkle.style.height = size + 'px';
+    sparkle.style.opacity = (0.5 + Math.random()*0.5).toFixed(2);
+    sparkle.style.animationDuration = (5 + Math.random()*6) + 's';
+    sparkle.style.animationDelay = (Math.random()*6) + 's';
+    sparkleContainer.appendChild(sparkle);
+  }
+}
+
+// ========== COMPLIMENT BOXES ANIMATION ==========
+function launchComplimentRain() {
+  const container = document.querySelector('.compliment-container');
+  const usedCompliments = [...compliments];
+  // Shuffle compliments
+  for(let i=usedCompliments.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [usedCompliments[i], usedCompliments[j]] = [usedCompliments[j], usedCompliments[i]];
+  }
+
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
+  let complimentIdx = 0;
+
+  // Create all boxes at once, then animate in sequence
+  for(let i=0; i<usedCompliments.length; i++) {
+    const box = document.createElement('div');
+    box.className = 'compliment-box';
+    box.innerText = usedCompliments[i];
+
+    // Assign pastel bg color
+    const bg = pastelPalette[i % pastelPalette.length];
+    box.style.setProperty('--compliment-bg', bg);
+
+    // Start at random X, above viewport (-80px)
+    const startX = 10 + Math.random()*(screenW-70-10);
+    const startY = -80 - Math.random()*120;
+    // Random fall duration, slightly slower for last ones
+    const duration = 7 + Math.random()*3 + (i/usedCompliments.length)*4;
+    // Slight horizontal drift
+    const drift = (Math.random()-0.5)*140;
+    // Stagger delay
+    const delay = 1.5 + i*0.18 + Math.random()*0.6;
+
+    // Set initial style
+    box.style.left = startX + 'px';
+    box.style.top = startY + 'px';
+    box.style.opacity = '0';
+
+    // Animate via JS (for mobile perf and natural drift)
+    setTimeout(()=>{
+      box.style.transition = `transform ${duration}s cubic-bezier(.42,.6,.36,1.06), opacity 1.1s`;
+      box.style.opacity = '1';
+      // End position: random X+drift, Y well below bottom
+      const endX = startX + drift;
+      const endY = screenH + 70 + Math.random()*100;
+
+      box.style.transform = `translate(${endX-startX}px, ${endY-startY}px) rotate(${(Math.random()-0.5)*15}deg)`;
+      // Fade out near the end
+      setTimeout(()=>{
+        box.style.opacity = '0';
+      }, (duration-1.2)*1000);
+    }, delay*1000);
+
+    // Remove after animation to avoid DOM overload
+    setTimeout(()=>{ box.remove(); }, (delay+duration+1.5)*1000);
+
+    container.appendChild(box);
+  }
+}
+
+// ========== FLOWER ENTRANCE + ANIMATION ===========
+function flowerEntrance() {
+  const flowerDiv = document.querySelector('.animated-flower');
+  flowerDiv.innerHTML = renderFlower();
+}
+
+// ========== MUSIC PLAYER ==========================
+function setupMusicPlayer() {
+  const musicBtn = document.querySelector('.music-toggle');
+  const musicLabel = document.querySelector('.music-toggle-label');
+  const audio = document.querySelector('.bg-music');
+  let muted = false;
+  let userStarted = false;
+
+  function playMusic() {
+    if(!userStarted) { audio.currentTime=0; userStarted=true; }
+    audio.volume = 0.13;
+    audio.play().catch(()=>{});
+    musicBtn.classList.remove('muted');
+    musicLabel.textContent = "On";
+  }
+  function pauseMusic() {
+    audio.pause();
+    musicBtn.classList.add('muted');
+    musicLabel.textContent = "Off";
+  }
+
+  musicBtn.addEventListener('click', ()=>{
+    if(audio.paused) {
+      playMusic();
+    } else {
+      pauseMusic();
+    }
+  });
+
+  // On first user interaction, start music (if not muted)
+  window.addEventListener('pointerdown', ()=>{
+    if(audio.paused && !muted) playMusic();
+  }, { once:true });
+}
+
+// ========== ON LOAD SEQUENCE ======================
+window.addEventListener('DOMContentLoaded', ()=>{
+  flowerEntrance();
+  createSparkles();
+
+  // Pause for 1.5s, then drop compliments
+  setTimeout(()=>{
+    launchComplimentRain();
+    // Optionally, repeat rain every ~40s
+    setInterval(launchComplimentRain, 39000);
+  }, 1700);
+
+  setupMusicPlayer();
+});
+
+// Responsive: Re-launch rain on resize for correct bounds
+window.addEventListener('resize', ()=>{
+  document.querySelectorAll('.compliment-box').forEach(b=>b.remove());
+  setTimeout(launchComplimentRain, 200);
+});

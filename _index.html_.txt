@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>You Are Magic</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Dancing+Script:700|Playfair+Display:700|Quicksand:400,600&display=swap" rel="stylesheet">
+  <!-- FontAwesome for music icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css?v=1"/>
+</head>
+<body>
+  <!-- Gradient ambient background animation -->
+  <div class="ambient-bg"></div>
+  <!-- Sparkle overlay -->
+  <div class="sparkle-container"></div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Flower Animation -->
+    <section class="flower-section">
+      <div class="animated-flower" aria-label="Animated flower"></div>
+    </section>
+
+    <!-- Compliments (populated by JS) -->
+    <section class="compliment-container"></section>
+  </main>
+
+  <!-- Music toggle -->
+  <button class="music-toggle" aria-label="Toggle music">
+    <i class="fa-solid fa-music"></i>
+    <span class="music-toggle-label">On</span>
+  </button>
+  <audio class="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2023/02/13/audio_126b5a5417.mp3" type="audio/mp3">
+    <!-- Free gentle background music from Pixabay, can be replaced -->
+  </audio>
+
+  <!-- Footer message -->
+  <footer>
+    <p>
+      These aren’t even all the things I admire about you. Just the ones I could fit here.
+    </p>
+  </footer>
+
+  <script src="script.js?v=1"></script>
+</body>
+</html>
